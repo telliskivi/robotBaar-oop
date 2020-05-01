@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="305.0" prefWidth="259.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<VBox alignment="CENTER" prefHeight="341.0" prefWidth="259.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <!-- viidatakse Controller.java klassile -->
     <children>
 
       <Label alignment="CENTER" contentDisplay="CENTER" text="RobotBaar" textAlignment="CENTER">
@@ -21,19 +22,19 @@
          </VBox.margin>
       </Label>
 
-        <ComboBox fx:id="joogid" prefHeight="26.0" prefWidth="259.0" promptText="Vali jook">
+        <ComboBox fx:id="joogid" prefHeight="26.0" prefWidth="245.0" promptText="Vali jook!">
             <VBox.margin>
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>
         </ComboBox>
 
-        <TextField fx:id="kogus" onAction="#võtaKogus" prefWidth="128.0" promptText="Kogus">
+        <TextField fx:id="kogus" prefHeight="26.0" prefWidth="245.0" promptText="Kogus">
             <VBox.margin>
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>
         </TextField>
 
-      <CheckBox fx:id="püsiklient" mnemonicParsing="false" prefHeight="10.0" prefWidth="239.0" text="Püsiklient">
+      <CheckBox fx:id="püsiklient" onMouseEntered="#kasonKlient" mnemonicParsing="false" prefHeight="10.0" prefWidth="239.0" text="Püsiklient">
          <opaqueInsets>
             <Insets top="20.0" />
          </opaqueInsets>
@@ -42,16 +43,19 @@
          </padding>
       </CheckBox>
 
-            <TextField fx:id="screen" onAction="#kuvaOst" editable="false" prefHeight="75.0" prefWidth="239.0">
+        <TextField fx:id="screen" alignment="CENTER" editable="false" prefHeight="132.0" prefWidth="238.0">
          <opaqueInsets>
             <Insets bottom="5.0" top="5.0" />
          </opaqueInsets>
          <VBox.margin>
             <Insets bottom="5.0" top="5.0" />
          </VBox.margin>
+         <font>
+            <Font size="13.0" />
+         </font>
       </TextField>
 
-        <Button fx:id="button" onAction="#nupuVajutus" prefHeight="26.0" prefWidth="276.0" text="Osta">
+        <Button fx:id="button" onAction="#Ostmine" onMouseClicked="#nupuVajutus" onMouseMoved="#hiirPeal"  prefHeight="26.0" prefWidth="276.0" text="Osta">
             <VBox.margin>
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>
