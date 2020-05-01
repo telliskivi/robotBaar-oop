@@ -1,0 +1,5 @@
+Laua viin;3
+Viru valge;4
+Moe Viin;6
+Sparta;1
+Üheeurishot;2

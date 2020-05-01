@@ -10,9 +10,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml")); //võtab fxml'ilst kujunduse
+        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+
         primaryStage.setTitle("Robot Baar");
-        primaryStage.setScene(new Scene(root, 259, 341));
+        primaryStage.setScene(new Scene(root, 228, 259));
         primaryStage.show();
     }
 
