@@ -15,13 +15,13 @@ public class Joogihinnad{
     List<Double> hinnad = new ArrayList<>();
 
     public List<Double> joogid(String failinimi) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(failinimi));) {
-            String rida1 = br.readLine();
+        try (BufferedReader loeFailist = new BufferedReader(new FileReader(failinimi));) {
+            String rida = loeFailist.readLine();
 
-            while (rida1 != null) {
-                String[]d = rida1.split(";");
+            while (rida != null) {
+                String[]d = rida.split(";");
                 hinnad.add(Double.parseDouble(d[1]));
-                rida1 = br.readLine();
+                rida = loeFailist.readLine();
             }
         }
         return hinnad;
