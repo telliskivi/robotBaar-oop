@@ -55,7 +55,7 @@
             </font>
         </TextField>
 
-        <Button fx:id="button" onMouseClicked="#nupuVajutus" onMouseMoved="#hiirPeal"  prefHeight="26.0" prefWidth="276.0" text="Osta">
+        <Button fx:id="button" onMouseClicked="#nupuVajutus" onMouseEntered="#hiirPeal"  prefHeight="26.0" prefWidth="276.0" text="Osta">
             <VBox.margin>
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>

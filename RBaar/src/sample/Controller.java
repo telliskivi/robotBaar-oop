@@ -1,8 +1,7 @@
 package sample;
 
-import Projekt2.JoogiNimed;
 import Projekt2.Joogihinnad;
-import Projekt2.Klient;
+import Projekt2.SisestusErind;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,7 +16,11 @@ import javafx.scene.input.MouseEvent;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Controller implements Initializable {
 
@@ -35,12 +38,11 @@ public class Controller implements Initializable {
 
     double õllehind;
 
-
-
+    int[] numbrid = IntStream.range(1, 100).toArray();
     ObservableList<String> menuu = FXCollections.observableArrayList();
 
 
-    @Override
+    @Override //Meetod, mis käivitub programmi avamisel ning nagu näha, võtab andmed.
     public void initialize(URL url, ResourceBundle rb) {
         try {
             võtaAndmed();
@@ -54,8 +56,9 @@ public class Controller implements Initializable {
     }
 
     //Kui kursori nupu peale libistad, siis kontrollib, kas on lahtrid valitud.
+    //Teeb kindlaks, millist toodet kasutaja soovib osta.
     public Double hiirPeal(MouseEvent mouseEvent) throws IOException {
-        List<Double>a = new ArrayList<>();
+        List<Double> a = new ArrayList<>();
         Joogihinnad hinnad = new Joogihinnad();
         boolean menüüonTühi = (joogid.getValue() == null);
         boolean kogusonTühi = (kogus.getText().isEmpty());
@@ -71,16 +74,19 @@ public class Controller implements Initializable {
             } else if (menüüonTühi && !kogusonTühi) {
                 screen.setText("Vali jook.");
 
+            } else if (!(Arrays.toString(numbrid).contains(kogus.getText()))) {
+                screen.setText("Palun vali täisarv 1 ja 100 vahel");
+
             } else {
                 for (int i = 0; i < joogid.getItems().size(); i++) {
                     if (ost.equals(joogid.getItems().get(i))) {
-                        a = hinnad.joogid("Õlled.txt");
+                        a = hinnad.joogid("Joogid.txt");
                         for (int j = 0; j < a.size(); j++) {
-                            a.set(j, (Double.parseDouble(String.valueOf(a.get(j))) * Integer.parseInt(kogus.getText())));
+                            a.set(j, Double.parseDouble(String.valueOf(a.get(i))) * Integer.parseInt(kogus.getText()));
 
                         }
                         //screen.setText(a.get());
-                        õllehind = a.set(i, (Double.parseDouble(String.valueOf(a.get(i))) * Integer.parseInt(kogus.getText())));
+                        õllehind = a.set(i, Double.parseDouble(String.valueOf(a.get(i))) * Integer.parseInt(kogus.getText()));
                         screen.setText(Double.toString(õllehind) + " eurot.");
                     }
                 }
@@ -93,63 +99,90 @@ public class Controller implements Initializable {
             } else if (!ost.equals("") && !(kogus.getText().equals(""))) {
                 for (int i = 0; i < joogid.getItems().size(); i++) {
                     if (ost.contentEquals((CharSequence) joogid.getItems().get(i))) {
-                        a = hinnad.joogid("Õlled.txt");
+                        a = hinnad.joogid("Joogid.txt");
                         for (int j = 0; j < a.size(); j++) {
                             String b = String.valueOf(a.set(j, 0.9 * (Double.parseDouble(String.valueOf(a.get(j))) * Integer.parseInt(kogus.getText()))));
 
                         }
-                        //screen.setText(a.get());
-                        õllehind = a.set(i, (Double.parseDouble(String.valueOf(a.get(i))) * Integer.parseInt(kogus.getText())));
+                        õllehind = a.set(i, 0.9*(Double.parseDouble(String.valueOf(a.get(i))) * Integer.parseInt(kogus.getText())));
                         screen.setText(Double.toString(õllehind) + " eurot.");
-
 
 
                     }
                 }
             }
-        }return õllehind;
+        }
+        return õllehind;
     }
+
     //Küsib, kas on püsiklient.
     public void kasonKlient(MouseEvent mouseEvent) {
-        screen.setText("Kas oled püsiklient?");
-    }
-    // Kui vajutatakse nuppu, siis kinnitatakse ost.
-    public void nupuVajutus(MouseEvent mouseEvent) throws IOException {
-        screen.setText("Ostsid endale joogi!");
-        Klient Jaanus = new Klient(40,õllehind);
-        System.out.println(Jaanus.rahakogus);
-        System.out.println(Jaanus.krediit());
-        System.out.println("Maksumus"+Jaanus.maksumus());
+        if (!püsiklient.isSelected())
+            screen.setText("Kas oled püsiklient?");
+
     }
 
-    @FXML
-    private void kuvaOst(ActionEvent event) {
+    // Kui vajutatakse nuppu, siis kinnitatakse ost, kui vajalikud tingimused on täidetud.
+    public void nupuVajutus(MouseEvent mouseEvent) throws Exception {
+        boolean menüüonTühi = (joogid.getValue() == null);
+        boolean kogusonTühi = (kogus.getText().isEmpty());
+//Siin teeme veidi lausearvutust
+        if (menüüonTühi && kogusonTühi) {
+            screen.setText("Vali jook ja kogus.");
+
+        } else if (!menüüonTühi && kogusonTühi) {
+            screen.setText("Vali kogus.");
+
+        } else if (menüüonTühi && !kogusonTühi) {
+            screen.setText("Vali jook.");
+
+        } else if (!(Arrays.toString(numbrid).contains(kogus.getText()))) {
+            screen.setText("Palun vali täisarv 1 ja 100 vahel");
+        } else {
+
+            //Kui kõik on korras, kirjutame tulemuse faili ning toome
+            //nähtavale siiani ostetud jookidest kogutulu
+
+            kirjutaFaili();
+            screen.setText("Täname ostu eest! Teie kulutused on " + Double.toString(kogutulu()) + " eurot.");
+
+        }
     }
 
-
+    public static boolean onTäisarv(String s, int radix) { //meetod aitab kontrollida, kas tegu on täisarvuga või mitte.
+        if (s.isEmpty()) return false;
+        for (int i = 0; i < s.length(); i++) {
+            if (i == 0 && s.charAt(i) == '-') {
+                if (s.length() == 1) return false;
+                else continue;
+            }
+            if (Character.digit(s.charAt(i), radix) < 0) return false;
+        }
+        return true;
+    }
 
 
 
     private void võtaAndmed() throws IOException {
-
+//Loeme tekstifailist joogid.txt elemendid ning lisame nende info ComboBoxi.
         menuu.removeAll();
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("Õlled.txt"), StandardCharsets.UTF_8))) {
-                    String rida1 = br.readLine();
-                    while (rida1 != null) {
-                        String[] a = rida1.split(";");
-                        double hind1 = Double.parseDouble(a[1]);
-                        System.out.println(rida1);
-                        rida1 = br.readLine();
-                        menuu.addAll(a[0] + " - " + Double.parseDouble(a[1]) + "€");
-                    }
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("Joogid.txt"), StandardCharsets.UTF_8))) {
+            String rida1 = br.readLine();
+            while (rida1 != null) {
+                String[] a = rida1.split(";");
+                double hind1 = Double.parseDouble(a[1]);
+                System.out.println(rida1);
+                rida1 = br.readLine();
+                menuu.addAll(a[0] + " - " + Double.parseDouble(a[1]) + "€");
+            }
 
-                }
-                joogid.getItems().addAll(menuu); //lisame menüü pardale
+        }
+        joogid.getItems().addAll(menuu); //lisame menüü pardale
 
 
     }
 
-
+//get- ja set-meetodid
     public TextField getKogus() {
         return kogus;
     }
@@ -181,4 +214,32 @@ public class Controller implements Initializable {
     public void setButton(Button button) {
         this.button = button;
     }
+
+    private void kirjutaFaili() throws IOException { //Kirjutame jookide info faili "Ostud.txt"
+        try {
+            Files.write(Paths.get("Ostud.txt"), (kogus.getText() + ";" + joogid.getValue() + ";" + Double.toString(õllehind) + "\n").getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+
+
+        }
+    } //Meetod loeb failist "Ostud.txt" ning väljastab sealse info põhjal ostude kogusumma.
+    private double kogutulu() throws Exception{
+        double summa = 0;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("Ostud.txt"), StandardCharsets.UTF_8))) {
+            String rida1 = br.readLine();
+            rida1 = br.readLine();
+            while (rida1 != null) {
+                String[] a = rida1.split(";");
+                double hind1 = Double.parseDouble(a[2]);
+                summa += hind1;
+                System.out.println(summa);
+                rida1 = br.readLine();
+
+
+
+            }
+        }return summa;
+    }
+
 }
+

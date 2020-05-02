@@ -6,8 +6,8 @@ public class Klient implements Kliendid {
     public double õllehind;
     public double rahakogus;
 
-    public Klient(double rahakogus, double õllehind) {
-        this.rahakogus = rahakogus;
+    public Klient(double rahakogus, double õllehind) throws IOException {
+        this.rahakogus = rahakogus-maksumus();
         this.õllehind = õllehind;
     }
 
@@ -24,6 +24,14 @@ public class Klient implements Kliendid {
     @Override
     public double maksumus() throws IOException {
         return õllehind;
+    }
+
+    public void setÕllehind(double õllehind) {
+        this.õllehind = õllehind;
+    }
+
+    public void setRahakogus(double rahakogus) {
+        this.rahakogus = rahakogus;
     }
 
     @Override

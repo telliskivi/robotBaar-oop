@@ -1,0 +1,15 @@
+Brunner (Valge);7
+Majavein (punane);6
+Pilsner;1.5
+Manchester;2
+Saku Kuld;2
+Dubliner;1.5
+Bock;9.99
+Laua viin;3
+Viru valge;4
+Moe Viin;6
+Sparta;1
+Üheeurishot;2
+White russian;8
+Margarita;7
+Majamöks;33
