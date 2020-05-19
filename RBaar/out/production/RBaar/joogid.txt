@@ -1,5 +1,0 @@
-Pilsner;1.5
-Manchester;2
-Saku Kuld;2
-Dubliner;1.5
-Bock;9.99

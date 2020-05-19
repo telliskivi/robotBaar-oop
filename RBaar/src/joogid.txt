@@ -1,6 +1,0 @@
-Saku Pilsner;1.5
-Saku Manchester;2
-Saku Kuld;2
-Saku Dubliner;1.5
-Viru valge;9.99
-Lauaviin;6.99
